@@ -16,27 +16,41 @@ const styles = {
     }
 };
 
-export default ({exercises}) => {
+export default ({
+                    exercises,
+                    category,
+                    onSelect,
+                    exercise: {
+                        id,
+                        title = 'Welcome!',
+                        description = 'Please select an exercise from the list on left.'
+                    }
+                }) => {
     return (
         <Grid container>
             <Grid item xs>
                 <Paper style={styles.paper}>
                     {exercises.map(([group, exercises]) =>
-                        <Fragment>
-                            <Typography
-                                variant='headline'
-                                style={{textTransform: 'capitalize'}}
-                            >
-                                {group}<br/>
-                            </Typography>
-                            <List component="ul">
-                                {exercises.map(({title}) =>
-                                    <ListItem button>
-                                        <ListItemText primary={title}/>
-                                    </ListItem>
-                                )}
-                            </List>
-                        </Fragment>
+                        !category || category === group ?
+                            <Fragment>
+                                <Typography
+                                    key={group}
+                                    variant='headline'
+                                    style={{textTransform: 'capitalize'}}
+                                >
+                                    {group}<br/>
+                                </Typography>
+                                <List component="ul">
+                                    {exercises.map(({id, title}) =>
+                                        <ListItem
+                                            key={id}
+                                            onClick={() => onSelect(id)}
+                                            button>
+                                            <ListItemText primary={title}/>
+                                        </ListItem>
+                                    )}
+                                </List>
+                            </Fragment> : null
                     )}
                 </Paper>
             </Grid>
@@ -45,13 +59,13 @@ export default ({exercises}) => {
                     <Typography
                         variant='h3'
                     >
-                        Welcome!
+                        {title}
                     </Typography>
                     <Typography
                         variant='subtitle1'
-                        style={{marginTop : 30}}
+                        style={{marginTop: 30}}
                     >
-                        Please select an exercise from the list on left.
+                        {description}
                     </Typography>
                 </Paper>
             </Grid>

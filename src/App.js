@@ -4,19 +4,36 @@ import Header from "./Components/layouts/Header";
 import Footer from "./Components/layouts/Footer";
 import {muscles, exercises} from "./store";
 
-class App extends React.Component {
+export default class extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             exerciseList: exercises,
-            category: ''
-        }
+            exercise: {},
+        };
     }
 
-    handleTabs = category => {
+    onSelect = category => {
       this.setState({
+          // console.log(category);
           category
       })
+    };
+
+    handleExerciseSelected = id => {
+        // Async setState
+        this.setState(({exerciseList}) => ({
+            exercise : exerciseList.find(ex => ex.id === id)
+        }))
+    };
+
+    handleExerciseCreate = exercise => {
+        this.setState(({ exercise }) => ({
+            exerciseList: [
+                ...exercises,
+                exercise
+            ]
+        }))
     };
 
     getExercisesByMuscles() {
@@ -30,15 +47,22 @@ class App extends React.Component {
 
     render() {
         const exercises = this.getExercisesByMuscles(),
-            { category } = this.state;
+            { category, exercise } = this.state;
         return (
             <Fragment>
-                <Header/>
-                <Exercises exercises={exercises}/>
+                <Header
+                    onExerciseCreate={this.handleExerciseCreate}
+                    muscles={muscles}/>
+                <Exercises
+                    exercise={exercise}
+                    exercises={exercises}
+                    category={category}
+                    onSelect={this.handleExerciseSelected}
+                />
                 <Footer
                     category={category}
                     muscles={muscles}
-                    onChange={this.handleTabs}
+                    onSelect={this.onSelect}
                 />
 
             </Fragment>
@@ -48,4 +72,4 @@ class App extends React.Component {
     }
 }
 
-export default App
+// export default App
